@@ -1,20 +1,29 @@
 import os
+import streamlit as st
+from dotenv import load_dotenv
 
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from tools import web_search , scrape_url 
-from dotenv import load_dotenv
 
+from tools import web_search, scrape_url
 
 load_dotenv()
 
-#model setup 
+# Get OpenRouter API key
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+
+if not OPENROUTER_API_KEY:
+    OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
+
+if not OPENROUTER_API_KEY:
+    raise ValueError("OPENROUTER_API_KEY is not configured.")
+
 llm = ChatOpenAI(
     model="openrouter/free",
     temperature=0,
-    api_key=os.getenv("OPENROUTER_API_KEY"),
+    api_key=OPENROUTER_API_KEY,
     base_url="https://openrouter.ai/api/v1"
 )
 
